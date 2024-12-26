@@ -1,0 +1,121 @@
+[gd_scene load_steps=11 format=3 uid="uid://7uhqj5u1hc4d"]
+
+[ext_resource type="Texture2D" uid="uid://cq4s7orjtp2df" path="res://assets/player/parrot.png" id="1_ihwq2"]
+[ext_resource type="Script" path="res://tester/bird_2.gd" id="2_7yma6"]
+[ext_resource type="Texture2D" uid="uid://bd6kbsrwljcs7" path="res://assets/env/elementStone025.png" id="3_jtm0y"]
+[ext_resource type="Texture2D" uid="uid://dqwpu3x8j7kcf" path="res://assets/env/elementWood015.png" id="4_uy5in"]
+[ext_resource type="Texture2D" uid="uid://d4kepx7tp1ggp" path="res://icon.svg" id="5_eoa0c"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_b1aoa"]
+bounce = 0.5
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_16b3l"]
+radius = 36.0139
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p0eou"]
+size = Vector2(771.052, 45)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_et8o8"]
+size = Vector2(660, 28)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kmj5a"]
+radius = 65.0077
+
+[node name="Tester" type="Node2D"]
+
+[node name="Bird" type="RigidBody2D" parent="."]
+position = Vector2(598, 67)
+physics_material_override = SubResource("PhysicsMaterial_b1aoa")
+
+[node name="Sprite2D" type="Sprite2D" parent="Bird"]
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("1_ihwq2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bird"]
+shape = SubResource("CircleShape2D_16b3l")
+
+[node name="Bird2" type="RigidBody2D" parent="."]
+position = Vector2(633, 163)
+physics_material_override = SubResource("PhysicsMaterial_b1aoa")
+script = ExtResource("2_7yma6")
+
+[node name="Sprite2D" type="Sprite2D" parent="Bird2"]
+scale = Vector2(0.28, 0.28)
+texture = ExtResource("1_ihwq2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bird2"]
+shape = SubResource("CircleShape2D_16b3l")
+
+[node name="Timer" type="Timer" parent="Bird2"]
+wait_time = 2.0
+
+[node name="Label" type="Label" parent="Bird2"]
+offset_left = 16.0
+offset_top = -60.0
+offset_right = 56.0
+offset_bottom = -37.0
+theme_override_font_sizes/font_size = 24
+text = "False"
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(590, 644)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
+rotation = 1.5708
+scale = Vector2(1, 10)
+texture = ExtResource("3_jtm0y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-15, -12)
+scale = Vector2(1.52, 1)
+shape = SubResource("RectangleShape2D_p0eou")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(-21, 561)
+rotation = 1.5708
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D2"]
+rotation = 1.5708
+scale = Vector2(1, 10)
+texture = ExtResource("3_jtm0y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2(-15, -12)
+scale = Vector2(1.52, 1)
+shape = SubResource("RectangleShape2D_p0eou")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2(1177, 544)
+rotation = -1.5708
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D3"]
+rotation = 1.5708
+scale = Vector2(1, 10)
+texture = ExtResource("3_jtm0y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
+position = Vector2(-15, -12)
+scale = Vector2(1.52, 1)
+shape = SubResource("RectangleShape2D_p0eou")
+
+[node name="Plank" type="RigidBody2D" parent="."]
+position = Vector2(575, 533)
+
+[node name="Sprite2D" type="Sprite2D" parent="Plank"]
+scale = Vector2(3, 0.4)
+texture = ExtResource("4_uy5in")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Plank"]
+shape = SubResource("RectangleShape2D_et8o8")
+
+[node name="Pivot" type="StaticBody2D" parent="."]
+position = Vector2(577, 577)
+scale = Vector2(0.4, 0.4)
+
+[node name="Sprite2D" type="Sprite2D" parent="Pivot"]
+texture = ExtResource("5_eoa0c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Pivot"]
+shape = SubResource("CircleShape2D_kmj5a")
+
+[connection signal="timeout" from="Bird2/Timer" to="Bird2" method="_on_timer_timeout"]
