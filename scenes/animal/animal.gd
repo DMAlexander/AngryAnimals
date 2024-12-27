@@ -5,16 +5,20 @@ enum ANIMAL_STATE { READY, DRAG, RELEASE }
 
 const DRAG_LIM_MAX: Vector2 = Vector2(0, 60)
 const DRAG_LIM_MIN: Vector2 = Vector2(-60, 0)
+const IMPULSE_MULT: float = 20.0
+const IMPULSE_MAX: float = 1200.0
 
 var _start: Vector2 = Vector2.ZERO
 var _drag_start: Vector2 = Vector2.ZERO
 var _dragged_vector: Vector2 = Vector2.ZERO
 var _last_dragged_vector: Vector2 = Vector2.ZERO
+var _arrow_scale_x: float = 0.0
 
 
 @onready var label: Label = $Label
 @onready var stretch_sound: AudioStreamPlayer2D = $StretchSound
 @onready var arrow: Sprite2D = $Arrow
+@onready var launch_sound: AudioStreamPlayer2D = $LaunchSound
 
 
 var _state: ANIMAL_STATE = ANIMAL_STATE.READY
@@ -22,6 +26,7 @@ var _state: ANIMAL_STATE = ANIMAL_STATE.READY
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	_arrow_scale_x = arrow.scale.x
 	arrow.hide()
 	_start = position
 
@@ -32,14 +37,25 @@ func _physics_process(delta: float) -> void:
 	label.text = "%s\n" % ANIMAL_STATE.keys()[_state]
 	label.text += "%.1f,%.1f" % [_dragged_vector.x, _dragged_vector.y]
 	
+func get_impulse() -> Vector2:
+	return _dragged_vector * -1 * IMPULSE_MULT
+
+func set_drag() -> void:
+	_drag_start = get_global_mouse_position()
+	arrow.show()
+
+func set_release() -> void:
+	arrow.hide()
+	freeze = false
+	apply_central_impulse(get_impulse())
+	launch_sound.play()
+	
 func set_new_state(new_state: ANIMAL_STATE) -> void:
 	_state = new_state
 	if _state == ANIMAL_STATE.RELEASE:
-		arrow.hide()
-		freeze = false
+		set_release()
 	elif _state == ANIMAL_STATE.DRAG:
-		_drag_start = get_global_mouse_position()
-		arrow.show()
+		set_drag()
 	
 func detect_release() -> bool:
 	if _state == ANIMAL_STATE.DRAG:
@@ -49,6 +65,9 @@ func detect_release() -> bool:
 	return false
 	
 func scale_arrow() -> void:
+	var imp_len = get_impulse().length()
+	var perc = imp_len / IMPULSE_MAX
+	arrow.scale.x = (_arrow_scale_x * perc) + _arrow_scale_x
 	arrow.rotation = (_start - position).angle()
 	
 func play_stretch_sound() -> void:
